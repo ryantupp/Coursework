@@ -28,7 +28,7 @@ public class Users{
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
                 row.put("UserID", results.getInt(1));
-                row.put("UserName", results.getString(2));
+                row.put("name", results.getString(2));
                 response.add(row);
             }
             return response.toString();
