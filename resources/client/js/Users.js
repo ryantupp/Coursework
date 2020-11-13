@@ -23,3 +23,25 @@ function formatUsersList(myJSONArray){
     }
     document.getElementById("UsersTable").innerHTML = dataHTML;
 }
+
+function UsersLogin() { <!--declares the function-->
+    //debugger;
+    console.log("Invoked UsersLogin() "); <!--logs to console to make it easier when debugging.-->
+    let url = "/users/login"; <!--sets url code to the correct API path.-->
+    let formData = new FormData(document.getElementById('LoginForm')); <!--gets the element LoginForm in the login.html file.-->
+
+    fetch(url, { <!--uses fetch and it is retrieving data from the database-->
+        method: "POST", <!--sets method as post-->
+        body: formData,
+    }).then(response => {
+        return response.json();                 <!--now return that promise to JSON-->
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));        <!-- if it does, convert JSON object to string and alert-->
+        } else {
+            Cookies.set("Token", response.Token); <!--sets cookie using the token and name-->
+            Cookies.set("UserName", response.UserName);
+            window.open("index.html", "_self");       <!--open index.html in same tab-->
+        }
+    });
+}
