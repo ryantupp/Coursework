@@ -45,3 +45,22 @@ function UsersLogin() { <!--declares the function-->
         }
     });
 }
+
+function logout() {
+    //debugger; //can be used if I need to debug my code.
+    console.log("Invoked logout");//prints to console
+    let url = "/users/logout";//sets url to logout
+    fetch(url, {method: "POST"//fetches the corresponding post method
+    }).then(response => {
+        return response.json();                 //now return that promise to JSON
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));        // if it does, convert JSON object to string and alert
+        } else {
+            Cookies.remove("Token", response.Token);    //UserName and Token are removed
+            Cookies.remove("UserName", response.UserName);
+            window.open("login.html", "_self");       //open index.html in same tab
+        }
+    });
+}
+
