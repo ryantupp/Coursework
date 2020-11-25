@@ -64,3 +64,24 @@ function logout() {
     });
 }
 
+function UsersCreateAccount() {
+    //debugger;
+    console.log("Invoked usersCreateAccount");
+    let url = "/Users/addUser";
+
+    let formData = new FormData(document.getElementById('createAnAccountForm'));
+
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            alert("New account created, log in.");
+            window.open("login.html", "_self");
+        }
+    });
+}

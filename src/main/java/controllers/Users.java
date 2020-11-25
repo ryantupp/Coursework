@@ -53,7 +53,7 @@ public class Users{
                     String Token = UUID.randomUUID().toString(); //sets token to random uuid
                     PreparedStatement ps2 = Main.db.prepareStatement("UPDATE Users SET Token = ? WHERE UserName = ?");//updates token in the users table in the corresponding username
                     ps2.setString(1, Token);
-                    ps2.setString(2, UserName);//sets toekn and username
+                    ps2.setString(2, UserName);//sets token and username
                     ps2.executeUpdate();
                     JSONObject userDetails = new JSONObject();
                     userDetails.put("UserName", UserName);
@@ -70,6 +70,41 @@ public class Users{
             return "{\"Error\": \"Server side error!\"}";//returns error server side error
         }
     }
+
+
+    //create an account
+    @POST
+    @Path("addUser")
+    public String addUser(@FormDataParam("name") String name, @FormDataParam("email") String email, @FormDataParam("UserName") String UserName, @FormDataParam("Password") String Password, @FormDataParam("ConfirmPassword") String ConfirmPassword, @FormDataParam("DateOfBirth") String DateOfBirth, @FormDataParam("height") String height, @FormDataParam("weight") int weight) {
+        System.out.println("Invoked addUser() on path users/createAnAccount");
+        try{
+            PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO Users (name, DateOfBirth, trophies, rank, information, email, password, token, admin, WatchID, ReadID, goals, graphs, UserName, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            statement1.setString(1, name);
+            statement1.setString(2, DateOfBirth);
+            statement1.setInt(3, 0);
+            statement1.setInt(4, 0);
+            statement1.setString(5, "");
+            statement1.setString(6, email);
+            statement1.setString(7, Password);
+            statement1.setInt(8, 0);
+            statement1.setBoolean(9, false);
+            statement1.setInt(10, 0);
+            statement1.setInt(11, 0);
+            statement1.setInt(12, 0);
+            statement1.setInt(13, 0);
+            statement1.setString(14, UserName);
+            statement1.setString(15, height);
+            statement1.setInt(16, weight);
+            statement1.exectueUpdate();
+            return"{\"OK\": \"New user has been added. \"}";
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "{\"Error\": \"Something as gone wrong.\"}";
+        }
+    }
+
+
 
     //returns the userID with the token value
     public static int validToken(String Token) {

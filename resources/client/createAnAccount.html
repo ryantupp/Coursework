@@ -8,6 +8,7 @@
 </head>
 <body>
     <form id="createAnAccountForm"> <!--link to css-->
+        <input type="text" name="name" id="name"> <!--creates an input box for the email-->
         <input type="text" name="email" id="email"> <!--creates an input box for the email-->
         <input type="text" name="UserName" id="UserName"> <!--creates an input box for the name-->
         <input type="password" name="Password" id="Password"><!--creates an input box for the password-->
@@ -16,5 +17,7 @@
         <input type="text" name="height" id="height"> <!--creates an input box for the height-->
         <input type="text" name="weight" id="weight"> <!--creates an input box for the weight-->
     </form>
+
+    <button class="button" onclick='UsersCreateAccount();'>Create An Account</button>  <!--UsersCreateAccount()in users.js--> <!--calls this function-->
 </body>
 </html>
