@@ -8,14 +8,14 @@
 </head>
 <body>
     <form id="createAnAccountForm"> <!--link to css-->
-        <input type="text" name="name" id="name"> <!--creates an input box for the email-->
-        <input type="text" name="email" id="email"> <!--creates an input box for the email-->
-        <input type="text" name="UserName" id="UserName"> <!--creates an input box for the name-->
-        <input type="password" name="Password" id="Password"><!--creates an input box for the password-->
-        <input type="password" name="ConfirmPassword" id="ConfirmPassword"><!--creates an input box for the password confirmation-->
-        <input type="text" name="DateOfBirth" id="DateOfBirth"> <!--creates an input box for the DateOfBirth-->
-        <input type="text" name="height" id="height"> <!--creates an input box for the height-->
-        <input type="text" name="weight" id="weight"> <!--creates an input box for the weight-->
+        <input type="text" name="name" id="name" placeholder="First name (requried)"> <!--creates an input box for the email-->
+        <input type="text" name="email" id="email" placeholder="email (requried)"> <!--creates an input box for the email-->
+        <input type="text" name="UserName" id="UserName" placeholder="UserName (requried)"> <!--creates an input box for the name-->
+        <input type="password" name="Password" id="Password" placeholder="Password (requried)"><!--creates an input box for the password-->
+        <input type="password" name="ConfirmPassword" id="ConfirmPassword" placeholder="Confirm Password (requried)"><!--creates an input box for the password confirmation-->
+        <input type="text" name="DateOfBirth" id="DateOfBirth" placeholder="DateOfBirth (requried)"> <!--creates an input box for the DateOfBirth-->
+        <input type="text" name="height" id="height" placeholder="height (requried)"> <!--creates an input box for the height-->
+        <input type="text" name="weight" id="weight" placeholder="weight (requried)"> <!--creates an input box for the weight-->
     </form>
 
     <button class="button" onclick='UsersCreateAccount();'>Create An Account</button>  <!--UsersCreateAccount()in users.js--> <!--calls this function-->

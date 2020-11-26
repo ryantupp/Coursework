@@ -66,22 +66,22 @@ function logout() {
 
 function UsersCreateAccount() {
     //debugger;
-    console.log("Invoked usersCreateAccount");
-    let url = "/Users/addUser";
+    console.log("Invoked usersCreateAccount");//prints to console
+    let url = "/users/addUser"; //sets URL to the correct API call
 
-    let formData = new FormData(document.getElementById('createAnAccountForm'));
+    let formData = new FormData(document.getElementById('createAnAccountForm')); //sets formData to the data in the form
 
     fetch(url, {
         method: "POST",
-        body: formData,
+        body: formData,//calls function in Users.java
     }).then(response => {
         return response.json();
     }).then(response => {
-        if (response.hasOwnProperty("Error")) {
+        if (response.hasOwnProperty("Error")) {//checks for error
             alert(JSON.stringify(response));
         } else {
             alert("New account created, log in.");
-            window.open("login.html", "_self");
+            window.open("login.html", "_self");//re-directs to login for user to log in
         }
     });
 }
