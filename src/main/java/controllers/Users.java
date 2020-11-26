@@ -76,29 +76,58 @@ public class Users{
     @POST//post method as changes data in database
     @Path("addUser")//path name, list of parameters below
     public String addUser(@FormDataParam("name") String name, @FormDataParam("email") String email, @FormDataParam("UserName") String UserName, @FormDataParam("Password") String Password, @FormDataParam("ConfirmPassword") String ConfirmPassword, @FormDataParam("DateOfBirth") String DateOfBirth, @FormDataParam("height") String height, @FormDataParam("weight") int weight) {
-        System.out.println("Invoked addUser() on path users/createAnAccount");//prints to system, use this to check function is running
-        try{ //sql statement below
-            PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO Users (name, DateOfBirth, trophies, rank, information, email, password, token, admin, goals, graphs, UserName, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            statement1.setString(1, name);//sets all of the parameters to the correct information
-            statement1.setString(2, DateOfBirth);
-            statement1.setInt(3, 0);
-            statement1.setInt(4, 0);
-            statement1.setString(5, "");
-            statement1.setString(6, email);
-            statement1.setString(7, Password);
-            statement1.setInt(8, 0);
-            statement1.setBoolean(9, false);
-            statement1.setInt(10, 0);
-            statement1.setInt(11, 0);
-            statement1.setString(12, UserName);
-            statement1.setString(13, height);
-            statement1.setInt(14, weight);
-            statement1.executeUpdate();//executes statement
-            return"{\"OK\": \"New user has been added. \"}";//returns this message
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());//error occured
-            return "{\"Error\": \"Something as gone wrong.\"}";
+        if (checkNewUserPassword(Password, ConfirmPassword)){
+            if (checkNewUserNameEmail(UserName, email)){
+                System.out.println("Invoked addUser() on path users/createAnAccount");//prints to system, use this to check function is running
+                try{ //sql statement below
+                    PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO Users (name, DateOfBirth, trophies, rank, information, email, password, token, admin, goals, graphs, UserName, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    statement1.setString(1, name);//sets all of the parameters to the correct information
+                    statement1.setString(2, DateOfBirth);
+                    statement1.setInt(3, 0);
+                    statement1.setInt(4, 0);
+                    statement1.setString(5, "");
+                    statement1.setString(6, email);
+                    statement1.setString(7, Password);
+                    statement1.setInt(8, 0);
+                    statement1.setBoolean(9, false);
+                    statement1.setInt(10, 0);
+                    statement1.setInt(11, 0);
+                    statement1.setString(12, UserName);
+                    statement1.setString(13, height);
+                    statement1.setInt(14, weight);
+                    statement1.executeUpdate();//executes statement
+                    return"{\"OK\": \"New user has been added. \"}";//returns this message
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());//error occured
+                    return "{\"Error\": \"Something as gone wrong.\"}";
+                }
+            } else {
+                return "{\"Error\": \"UserName or email already taken.\"}";
+            }
+        }
+        else {
+            return "{\"Error\": \"Password's do not match.\"}";
+        }
+
+    }
+
+    public static boolean checkNewUserPassword(String Password, String ConfirmPassword){//checks that password and confirmPassword match
+        System.out.println("Invoked User.checkNewUserPassword()");
+        if(Password.equals(ConfirmPassword)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public static boolean checkNewUserNameEmail(String UserName, String email){//checks that password and confirmPassword match
+        System.out.println("Invoked User.checkNewUserNameEmail()");
+        if(true){
+            return true;
+        } else{
+            return false;
         }
     }
 
