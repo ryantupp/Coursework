@@ -79,29 +79,33 @@ public class Users{
 
         if (checkNewUserPassword(Password, ConfirmPassword)){
             if (checkNewUserNameEmail(UserName, email)){
-                System.out.println("Invoked addUser() on path users/createAnAccount");//prints to system, use this to check function is running
-                try{ //sql statement below
-                    PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO Users (name, DateOfBirth, trophies, rank, information, email, password, token, admin, goals, graphs, UserName, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    statement1.setString(1, name);//sets all of the parameters to the correct information
-                    statement1.setString(2, DateOfBirth);
-                    statement1.setInt(3, 0);
-                    statement1.setInt(4, 0);
-                    statement1.setString(5, "");
-                    statement1.setString(6, email);
-                    statement1.setString(7, Password);
-                    statement1.setInt(8, 0);
-                    statement1.setBoolean(9, false);
-                    statement1.setInt(10, 0);
-                    statement1.setInt(11, 0);
-                    statement1.setString(12, UserName);
-                    statement1.setString(13, height);
-                    statement1.setInt(14, weight);
-                    statement1.executeUpdate();//executes statement
-                    return"{\"OK\": \"New user has been added. \"}";//returns this message
+                if (checkWeight(weight)) {
+                    System.out.println("Invoked addUser() on path users/createAnAccount");//prints to system, use this to check function is running
+                    try { //sql statement below
+                        PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO Users (name, DateOfBirth, trophies, rank, information, email, password, token, admin, goals, graphs, UserName, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        statement1.setString(1, name);//sets all of the parameters to the correct information
+                        statement1.setString(2, DateOfBirth);
+                        statement1.setInt(3, 0);
+                        statement1.setInt(4, 0);
+                        statement1.setString(5, "");
+                        statement1.setString(6, email);
+                        statement1.setString(7, Password);
+                        statement1.setInt(8, 0);
+                        statement1.setBoolean(9, false);
+                        statement1.setInt(10, 0);
+                        statement1.setInt(11, 0);
+                        statement1.setString(12, UserName);
+                        statement1.setString(13, height);
+                        statement1.setInt(14, weight);
+                        statement1.executeUpdate();//executes statement
+                        return "{\"OK\": \"New user has been added. \"}";//returns this message
 
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());//error occured
-                    return "{\"Error\": \"Something as gone wrong.\"}";
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());//error occured
+                        return "{\"Error\": \"Something as gone wrong.\"}";
+                    }
+                } else {
+                    return "{\"Error\": \"weight is an extreme value.\"}";
                 }
             } else {
                 return "{\"Error\": \"UserName or email already taken.\"}";
@@ -113,20 +117,43 @@ public class Users{
 
     }
 
-    public static boolean checkNewUserPassword(String Password, String ConfirmPassword){//checks that password and confirmPassword match
-        System.out.println("Invoked User.checkNewUserPassword()");
-        if(Password.equals(ConfirmPassword)){
-            return true;
-        } else{
+
+
+
+
+    public Boolean checkNewUserNameEmail(String UserName, String email){
+        System.out.println("Invoked User.checkNewUserNameEmail()");//prints this to system
+        try {
+            PreparedStatement ps = Main.db.prepareStatement("SELECT COUNT(*) FROM Users WHERE UserName = ? OR email = ?");//sql statement that increments count if username or email is already in the database.
+            ps.setString(1, UserName);//sets statement to the parameters.
+            ps.setString(2, email);
+            int count = ps.executeUpdate();//executes statement
+            if (count == 0){//checks count == 0 (not in database)
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());//error occured
             return false;
         }
     }
 
-    public static boolean checkNewUserNameEmail(String UserName, String email){//checks that password and confirmPassword match
-        System.out.println("Invoked User.checkNewUserNameEmail()");
-        if(true){
-            return true;
+
+
+    public static boolean checkNewUserPassword(String password, String confirmPassword){//checks that password and confirmPassword match
+        System.out.println("Invoked User.checkNewUserPassword()");
+        if(password == confirmPassword){
+            return false;
         } else{
+            return true;
+        }
+    }
+
+    public static boolean checkWeight(int weight){
+        if (weight>10 && weight < 450){
+            return true;
+        } else {
             return false;
         }
     }
