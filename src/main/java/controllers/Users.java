@@ -124,10 +124,11 @@ public class Users{
     public Boolean checkNewUserNameEmail(String UserName, String email){
         System.out.println("Invoked User.checkNewUserNameEmail()");//prints this to system
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT COUNT(*) FROM Users WHERE UserName = ? OR email = ?");//sql statement that increments count if username or email is already in the database.
-            ps.setString(1, UserName);//sets statement to the parameters.
-            ps.setString(2, email);
-            int count = ps.executeUpdate();//executes statement
+            PreparedStatement ps1 = Main.db.prepareStatement("SELECT COUNT(*) FROM Users WHERE UserName = ? OR email = ?");//sql statement that increments count if username or email is already in the database.
+            ps1.setString(1, UserName);//sets statement to the parameters.
+            ps1.setString(2, email);
+            ResultSet results = ps1.executeQuery();//executes statement
+            int count = results.getInt(1); //assigns the value of count(*)
             if (count == 0){//checks count == 0 (not in database)
                 return true;
             } else {
