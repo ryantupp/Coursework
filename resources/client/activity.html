@@ -7,6 +7,23 @@
         <script src="/client/js/activities.js"></script> <!--links to the javascript file Users.js-->
     </head>
     <body>
+        <form id="addActivityForm"> <!--link to css-->
+            <select type="text" name="activity" id="activity" placeholder="Type of activity (required)"> <!--creates a drop down selection for activity-->
+                <option value = "running">running</option>
+                <option value = "cycling">cycling</option>
+                <option value = "gym">gym</option>
+                <option value = "swimming">swimming</option>
+                <option value = "rowing">rowing</option><!--This list can be expanded further in the future-->
+            </select>
+            <input type="text" name="distance" id="distance" placeholder="distance in km (requried)"> <!--creates an input box for the email-->
+            <input type="text" name="time" id="time" placeholder="Enter time in minutes (required)">
+            <select type="text" name="difficulty" id="difficulty" placeholder="difficulty (requried)"> <!--creates a drop down selection for difficulty-->
+                <option value = "easy">easy</option>
+                <option value = "medium">medium</option>
+                <option value = "hard">hard</option>
+            </select>
+        </form>
 
+        <button class="button" onclick='addActivity();'>Add activity</button>
     </body>
 </html>
