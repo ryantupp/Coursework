@@ -5,6 +5,13 @@
         <title>Activity</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.js"></script>
         <script src="/client/js/activities.js"></script> <!--links to the javascript file Users.js-->
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawVisualization);
+        </script>
+
     </head>
     <body>
         <form id="addActivityForm"> <!--link to css-->
@@ -25,5 +32,7 @@
         </form>
 
         <button class="button" onclick='addActivity();'>Add activity</button>
+
+        <div id="chart_div" style="width: 900px; height: 500px;"></div>
     </body>
 </html>

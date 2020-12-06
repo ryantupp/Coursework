@@ -2,12 +2,16 @@ package controllers;
 
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
+
 import server.Main;
+
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+
 
 @Path("activitiesCompleted/")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -19,19 +23,23 @@ public class ActivitiesCompleted {
     @Path("addActivity")
     public String addActivity(@FormDataParam("activity") String activity, @FormDataParam("distance") int distance, @FormDataParam("time") int time, @FormDataParam("difficulty") String difficulty, @CookieParam("Token") String Token){
         System.out.println("Invoked addActivity() on path activitiesCompleted/addActivity");//prints to system, use this to check function is running
+        int activitiesId = returnActivityId(activity);//gets activityId
+        int userID = returnUserId(Token);//gets userId
+        int calories = numberOfCalories(activitiesId, time, difficulty);//calculates calories
+        int numberOfActivities = countActivities(userID);
+        int newUserActivityNum = numberOfActivities + 1;
 
         if (distance > 0 && time > 0){//checks distance and time are valid
-            int activitiesId = returnActivityId(activity);//gets activityId
-            int userID = returnUserId(Token);//gets userId
-            int calories = numberOfCalories(activitiesId, time, difficulty);//calculates calories
+
             try { //sql statement below
-                PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO ActivitiesCompleted (UserID, ActivitiesID, Distance, Difficulty, calories, time) VALUES (?, ?, ?, ?, ?, ?)");
+                PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO ActivitiesCompleted (UserID, ActivitiesID, Distance, Difficulty, calories, time, userActivityNum) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 statement1.setInt(1, userID);//sets all of the parameters to the correct information
                 statement1.setInt(2, activitiesId);
                 statement1.setInt(3, distance);
                 statement1.setString(4, difficulty);
                 statement1.setInt(5, calories);
                 statement1.setInt(6, time);
+                statement1.setInt(6, newUserActivityNum);
                 statement1.executeUpdate();//executes statement
                 return "{\"OK\": \"activity has been added. \"}";//returns this message
 
@@ -101,5 +109,92 @@ public class ActivitiesCompleted {
         }
     }
 
+    public int countActivities(int UserID){
 
+        try{
+            PreparedStatement statement = Main.db.prepareStatement("SELECT COUNT(*) FROM ActivitiesCompleted WHERE UserID = ?");
+            statement.setInt(1, UserID);
+            ResultSet numberOfActivitiesR = statement.executeQuery();
+            long numberOfActivitiesL = numberOfActivitiesR.getLong(1);
+            int numberOfActivities = (int) numberOfActivitiesL;
+            return numberOfActivities;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return -1;  //rogue value indicating error
+        }
+
+    }
+
+
+
+
+
+
+
+    @GET
+    @Path("drawGraph")
+    public int[] drawGraph(@CookieParam("Token") String Token) {
+        System.out.println("Invoked activitiesCompleted/drawGraph");
+
+        int userId = returnUserId(Token);
+        int[] caloriesList = new int[0];
+
+        try {
+            int numberOfActivities = countActivities(userId);
+
+            if (numberOfActivities >= 10) {
+                //want 10 most recent activities
+                caloriesList = new int[10];
+                try {
+                    PreparedStatement statement1 = Main.db.prepareStatement("SELECT calories FROM ActivitiesCompleted WHERE UserID = ? AND userActivityNum = ?");
+                    for (int i = 0; i < 10; i++) {
+                        statement1.setInt(1, userId);
+                        statement1.setInt(2, (numberOfActivities - i));
+                        ResultSet caloriesResult = statement1.executeQuery();
+                        long caloriesResultL = caloriesResult.getLong(1);
+                        int calories = (int) caloriesResultL;
+                        caloriesList[i] = calories;
+                    }
+                    return caloriesList;
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    System.out.println("2 "+ caloriesList);
+                    return caloriesList;  //rogue value indicating error
+                }
+            } else if(numberOfActivities > 0){
+                caloriesList = new int[numberOfActivities];
+                System.out.println("Number of activities = " + numberOfActivities);
+                try {
+                    PreparedStatement statement1 = Main.db.prepareStatement("SELECT calories FROM ActivitiesCompleted WHERE UserID = ? AND userActivityNum = ?");
+                    for (int i = 0; i < numberOfActivities; i++) {
+                        statement1.setInt(1, userId);
+                        statement1.setInt(2, (numberOfActivities - i));
+                        ResultSet caloriesResult = statement1.executeQuery();
+                        long caloriesResultL = caloriesResult.getLong(1);
+                        int calories = (int) caloriesResultL;
+                        //System.out.println(calories);
+                        caloriesList[i] = calories;
+                        //System.out.println(caloriesList);
+                    }
+                    //System.out.println("3 " + caloriesList);
+                    return caloriesList;
+
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    //System.out.println("4 "+caloriesList);
+                    return caloriesList;  //rogue value indicating error
+                }
+            } else{
+                System.out.println("No activities to plot");
+                //System.out.println("5 "+caloriesList);
+                return caloriesList;
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            //System.out.println("6 "+caloriesList);
+            return caloriesList;  //rogue value indicating error
+        }
+    }
 }
