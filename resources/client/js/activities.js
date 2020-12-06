@@ -96,6 +96,36 @@ function drawVisualization() {
         }
     });
 
+}
 
 
+
+function generateGoals(){
+
+    var goals = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+    let same = false;
+    let num1 = Math.floor((Math.random() * 10));
+    let num2 = Math.floor((Math.random() * 10));
+    let num3 = Math.floor((Math.random() * 10));
+
+    if(num1 == num2 || num1 == num3 || num2 == num3){
+        same = true;
+    }
+    while (same){
+        num2 = Math.floor((Math.random() * 10));
+        num3 = Math.floor((Math.random() * 10));
+        if(num1 == num2 || num1 == num3 || num2 == num3){
+            same = true;
+        } else {
+            same = false;
+        }
+    }
+
+    let goal1 = goals[num1];
+    let goal2 = goals[num2];
+    let goal3 = goals[num3];
+
+    document.getElementById("goalChoice1").innerHTML = goal1;
+    document.getElementById("goalChoice2").innerHTML = goal2;
+    document.getElementById("goalChoice3").innerHTML = goal3;
 }
