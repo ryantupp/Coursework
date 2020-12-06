@@ -37,16 +37,19 @@ function drawVisualization() {
 
         calories = response;
         console.log("information retrieved for graph.")
-        console.log(calories[1]);
+        console.log(calories);
 
-        var data = google.visualization.arrayToDataTable([
+
+        var data = google.visualization.arrayToDataTable(
+            [
         ['Activity', 'Calories'],
         ['2004/05',  165],
         ['2005/06',  135],
         ['2006/07',  157],
         ['2007/08',  139],
         ['2008/09',  136]
-    ]);
+    ]
+        );
         var options = {
             title : 'Activity Graph',
             vAxis: {title: 'Calories'},

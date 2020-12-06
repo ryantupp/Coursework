@@ -29,7 +29,7 @@ public class ActivitiesCompleted {
         int numberOfActivities = countActivities(userID);
         int newUserActivityNum = numberOfActivities + 1;
 
-        if (distance > 0 && time > 0){//checks distance and time are valid
+        if ((distance > 0 && distance < 1000 && time < 5000 && time > 0) || (activity == "gym" && time>0 && distance == 0)){//checks distance and time are valid
 
             try { //sql statement below
                 PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO ActivitiesCompleted (UserID, ActivitiesID, Distance, Difficulty, calories, time, userActivityNum) VALUES (?, ?, ?, ?, ?, ?, ?)");
