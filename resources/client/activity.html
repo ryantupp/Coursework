@@ -34,15 +34,8 @@
         <button class="button" onclick='addActivity();'>Add activity</button>
 
 
-
-
         <div id = "goals">
-            <form id="addGoalForm"> <!--link to css-->
-                <select type="text" name="goalType" id="goalType" placeholder="Choose your goal"> <!--creates a drop down selection for activity-->
-                    <option id = "goalChoice1" value = "goal1"></option>
-                    <option id = "goalChoice2" value = "goal2"></option>
-                    <option id = "goalChoice3" value = "goal3"></option><!--This list can be expanded further in the future-->
-                </select>
+            <form id="difficultyGoalsForm"> <!--link to css-->
                 <select type="text" name="goalDifficulty" id="goalDifficulty" placeholder="goalDifficulty (requried)"> <!--creates a drop down selection for difficulty-->
                     <option value = "easy">easy</option>
                     <option value = "medium">medium</option>
@@ -50,13 +43,24 @@
                 </select>
             </form>
 
+            <button class="button" onclick="setGoalDifficulty();">Set difficulty</button>
+            
+            <form id = "goalsForm">
+                <select type="text" name="goalType" id="goalType" placeholder="Choose your goal"> <!--creates a drop down selection for activity-->
+                    <option id = "goalChoice1" value = "goal1"></option>
+                    <option id = "goalChoice2" value = "goal2"></option>
+                    <option id = "goalChoice3" value = "goal3"></option><!--This list can be expanded further in the future-->
+                </select>
+            </form>
+
             <p id="goalDescription"></p>
 
         </div>
 
-        <button class="button" onclick='addActivity();'>Add activity</button>
+        <button class="button" onclick='addGoal();'>Add goal</button>
 
 
         <div id="chart_div" style="width: 900px; height: 500px;"></div>
+
     </body>
 </html>

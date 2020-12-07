@@ -29,13 +29,15 @@ function addActivity() {
 
 
 
+
+
 function drawVisualization() {
 
     //debugger;
 
     console.log("Invoked drawVisualization");//prints to console
     let url = "/activitiesCompleted/drawGraph"; //sets URL to the correct API call
-    var calories;
+
 
     fetch(url, {
         method: "GET",
@@ -51,12 +53,12 @@ function drawVisualization() {
             //console.log(response);
             //console.log(response.json());
             //console.log(response[1].stringify());
-
+            let calories;
             calories = response;
             console.log("information retrieved for graph.")
 
 
-            var data = google.visualization.arrayToDataTable(
+            let data = google.visualization.arrayToDataTable(
                 [
                     [0, 0],
                     [0,  0],
@@ -91,7 +93,7 @@ function drawVisualization() {
             var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
             chart.draw(data, options);
 
-            alert("Activity graph drawn");
+            console.log("Activity graph drawn");
             console.log(response);
         }
     });
@@ -99,33 +101,36 @@ function drawVisualization() {
 }
 
 
+// function setGoalDifficulty(){
+//     let difficulty = document.getElementById("goalDifficulty");
+//     console.log(difficulty);
+//     generateGoals(difficulty)
+// }
+//
+//
+// function generateGoals(){
+//
+//     //debugger;
+//     console.log("Invoked generateGoals");//prints to console
+//     let url = "/activity/generateGoals"; //sets URL to the correct API call
+//
+//     let formData = new FormData(document.getElementById('difficultyGoalsForm')); //sets formData to the data in the form
+//
+//     fetch(url, {
+//         method: "POST",
+//         body: formData,//calls function in Users.java
+//     }).then(response => {
+//         return response.json();
+//     }).then(response => {
+//         if (response.hasOwnProperty("Error")) {//checks for error
+//             alert(JSON.stringify(response));
+//         } else {
+//             alert("goals generated");
+//         }
+//     });
+//
+// }
+//
+// function addGoal() {
 
-function generateGoals(){
-
-    var goals = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-    let same = false;
-    let num1 = Math.floor((Math.random() * 10));
-    let num2 = Math.floor((Math.random() * 10));
-    let num3 = Math.floor((Math.random() * 10));
-
-    if(num1 == num2 || num1 == num3 || num2 == num3){
-        same = true;
-    }
-    while (same){
-        num2 = Math.floor((Math.random() * 10));
-        num3 = Math.floor((Math.random() * 10));
-        if(num1 == num2 || num1 == num3 || num2 == num3){
-            same = true;
-        } else {
-            same = false;
-        }
-    }
-
-    let goal1 = goals[num1];
-    let goal2 = goals[num2];
-    let goal3 = goals[num3];
-
-    document.getElementById("goalChoice1").innerHTML = goal1;
-    document.getElementById("goalChoice2").innerHTML = goal2;
-    document.getElementById("goalChoice3").innerHTML = goal3;
-}
+//}

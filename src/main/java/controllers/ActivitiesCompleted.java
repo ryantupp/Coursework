@@ -6,7 +6,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.simple.JSONObject;
 import server.Main;
 
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
@@ -134,7 +133,7 @@ public class ActivitiesCompleted {
 
     @GET
     @Path("drawGraph")
-    public String drawGraph(@CookieParam("Token") String Token) {
+    public int[] drawGraph(@CookieParam("Token") String Token) {
         System.out.println("Invoked activitiesCompleted/drawGraph");
 
         int userId = returnUserId(Token);
@@ -157,11 +156,13 @@ public class ActivitiesCompleted {
                         caloriesList[i] = calories;
                     }
 
-                    JSONObject userDetails = new JSONObject();
-                    for (int i = 0; i<10; i++){
-                        userDetails.put(i+1, caloriesList[i]);
-                    }
-                    return userDetails.toString();
+                    return caloriesList;
+
+//                    JSONObject userDetails = new JSONObject();
+//                    for (int i = 0; i<10; i++){
+//                        userDetails.put(i+1, caloriesList[i]);
+//                    }
+//                    return userDetails;
 
 
 //                    return caloriesList.toString;
@@ -171,7 +172,8 @@ public class ActivitiesCompleted {
                     System.out.println("2 "+ caloriesList);
                     JSONObject userDetails = new JSONObject();
                     userDetails.put("1", caloriesList[1]);
-                    return "{\"Error\": \"Something as gone wrong.\"}";
+                    return caloriesList;
+                    //return "{\"Error\": \"Something as gone wrong.\"}";
                 }
             } else if(numberOfActivities > 0){
                 caloriesList = new int[numberOfActivities];
@@ -189,26 +191,22 @@ public class ActivitiesCompleted {
                         //System.out.println(caloriesList);
                     }
                     //System.out.println("3 " + caloriesList);
-                    JSONObject userDetails = new JSONObject();
-                    for (int i = 0; i< numberOfActivities; i++){
-                        userDetails.put(i+1, caloriesList[i]);
-                    }
-                    System.out.println("userDetails.toString() = " + userDetails.toString());
-                    return userDetails.toString();
+                    return caloriesList;
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     //System.out.println("4 "+caloriesList);
                     JSONObject userDetails = new JSONObject();
                     userDetails.put("1", caloriesList[1]);
-                    return "{\"Error\": \"Something as gone wrong.\"}";  //rogue value indicating error
+                    return caloriesList;
+//                    return "{\"Error\": \"Something as gone wrong.\"}";  //rogue value indicating error
                 }
             } else{
                 System.out.println("No activities to plot");
                 //System.out.println("5 "+caloriesList);
                 JSONObject userDetails = new JSONObject();
                 userDetails.put("1", caloriesList[1]);
-                return userDetails.toString();
+                return caloriesList;
             }
 
         } catch (Exception e) {
@@ -216,7 +214,10 @@ public class ActivitiesCompleted {
             //System.out.println("6 "+caloriesList);
             JSONObject userDetails = new JSONObject();
             userDetails.put("1", caloriesList[1]);
-            return "{\"Error\": \"Something as gone wrong.\"}";
+            return caloriesList;
+            //return "{\"Error\": \"Something as gone wrong.\"}";
         }
     }
+
+
 }
