@@ -27,7 +27,7 @@ public class ActivitiesCompleted {
         int userID = returnUserId(Token);//gets userId
         int calories = numberOfCalories(activitiesId, time, difficulty);//calculates calories
         int numberOfActivities = countActivities(userID);
-        int newUserActivityNum = numberOfActivities + 1;
+        int newUserActivityNum = numberOfActivities + 1;//add one for new value
 
         if ((distance > 0 && distance < 1000 && time < 5000 && time > 0) || (activity == "gym" && time > 0 && distance == 0)) {//checks distance and time are valid
 
@@ -39,7 +39,7 @@ public class ActivitiesCompleted {
                 statement1.setString(4, difficulty);
                 statement1.setInt(5, calories);
                 statement1.setInt(6, time);
-                statement1.setInt(6, newUserActivityNum);
+                statement1.setInt(7, newUserActivityNum);
                 statement1.executeUpdate();//executes statement
                 return "{\"OK\": \"activity has been added. \"}";//returns this message
 
@@ -108,14 +108,15 @@ public class ActivitiesCompleted {
         }
     }
 
+    //counts number of activities completed by one user
     public int countActivities(int UserID) {
 
         try {
-            PreparedStatement statement = Main.db.prepareStatement("SELECT COUNT(*) FROM ActivitiesCompleted WHERE UserID = ?");
+            PreparedStatement statement = Main.db.prepareStatement("SELECT COUNT(*) FROM ActivitiesCompleted WHERE UserID = ?");//gets count from activitiesCompleted table
             statement.setInt(1, UserID);
             ResultSet numberOfActivitiesR = statement.executeQuery();
-            long numberOfActivitiesL = numberOfActivitiesR.getLong(1);
-            int numberOfActivities = (int) numberOfActivitiesL;
+            long numberOfActivitiesL = numberOfActivitiesR.getLong(1);//converts to long as originally was a result
+            int numberOfActivities = (int) numberOfActivitiesL;//then converts to int
             return numberOfActivities;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -125,60 +126,36 @@ public class ActivitiesCompleted {
     }
 
 
+    //draws graph from users activities
     @GET
     @Path("drawGraph")
     public String drawGraph(@CookieParam("Token") String Token) {
         System.out.println("Invoked activitiesCompleted/drawGraph");
 
-        //int userId = returnUserId(Token);
-        int userId = 12;
-        //int[] caloriesList = new int[0];
+        int userId = returnUserId(Token);//gets userId (repeating function)
 
-        //try {
-        //int numberOfActivities = countActivities(userId);
-
-/*            if (numberOfActivities >= 10) {
-                //want 10 most recent activities
-                caloriesList = new int[10];*/
-        JSONArray response = new JSONArray();
+        JSONArray response = new JSONArray();//creates a JSONArray
 
         try {
-            PreparedStatement statement1 = Main.db.prepareStatement("SELECT calories FROM ActivitiesCompleted WHERE UserID = ? ORDER BY userActivityNum");
+            PreparedStatement statement1 = Main.db.prepareStatement("SELECT calories FROM ActivitiesCompleted WHERE UserID = ? ORDER BY userActivityNum DESC");//Selects ActivitiesCompleted, ordered by activityNum
             statement1.setInt(1, userId);
-            ResultSet caloriesResult = statement1.executeQuery();
+            ResultSet caloriesResult = statement1.executeQuery();//gets result
 
-            while (caloriesResult.next() == true) {
+            while (caloriesResult.next() == true) {//creates a json object from the array
                 JSONObject row = new JSONObject();
                 row.put("calories", caloriesResult.getInt(1));
                 System.out.println(caloriesResult.getInt(1));
                 response.add(row);
             }
-            System.out.println(response.toString());
+            //System.out.println(response.toString());//use to check when de-bugging
             return response.toString();
 
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return  "{\"Error\": \"Unable to list items.  Error code xx.\"}";
+            return  "{\"Error\": \"Unable to draw graph.  Error code xx.\"}";//error message
         }
     }
-//            } else{
-//                System.out.println("No activities to plot");
-//                JSONObject userDetails = new JSONObject();
-//                for (int i = 0; i<10; i++){
-//                    userDetails.put(i+1, caloriesList[i]);
-//                }
-//                return userDetails;
-//            }
-
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            JSONObject userDetails = new JSONObject();
-//            for (int i = 0; i<10; i++){
-//                userDetails.put(i+1, caloriesList[i]);
-//            }
-//            return userDetails;
-//        }
 }
 
 

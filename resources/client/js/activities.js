@@ -28,57 +28,47 @@ function addActivity() {
     });
 }
 
-
-
-
-
-
 function drawVisualization() {
 
-    debugger;
+    //debugger;
 
     console.log("Invoked drawVisualization");//prints to console
     let url = "/activitiesCompleted/drawGraph"; //sets URL to the correct API call
 
-
     fetch(url, {
         method: "GET",
     }).then(response => {
-
-        //console.log(response.json());
         return response.json();
     }).then(items => {
         if (items.hasOwnProperty("Error")) {//checks for error
             alert(JSON.stringify(items));
         } else {
-            //console.log("in drawVisualization "+ items);
-            var data = [];
+            var data = [];//creates an array called data
 
-            let i = 0
+            let i = 0;
 
-            for (let item of items){
-                data[i] = {"activity": i + 1, "calories": item};
-                console.log(item);
-                i++;
+            for (let item of items){//fills in the data array with json object
+                if(i < 10){
+                    data[i] = {"activity": i + 1, "calories": item.calories};
+                    i++;
+                }
             }
 
-            //data = [{"gender": "1", "score" : item}, {"gender": "female", "score" : 13}];  //JSON Array
-
-            var labels = data.map(function (e) {
+            var labels = data.map(function (e) {//creates labels for the graph
                 return e.activity;
             });
-            var scores = data.map(function (e) {
+            var calories = data.map(function (e) {//creates the data field for the graph
                 return e.calories;
             });
 
             var ctx = document.getElementById("myChart").getContext("2d");
-            var config = {
+            var config = {//creates the grapg
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Calories burnt',  //title of graph
-                        data: scores,
+                        data: calories,
                         backgroundColor: 'rgba(0, 119, 204, 0.3)'
                     }]
                 },
