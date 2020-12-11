@@ -8,12 +8,13 @@
 
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">
-            google.charts.load('current', {'packages':['corechart']});
-            google.charts.setOnLoadCallback(drawVisualization);
+            //google.charts.load('current', {'packages':['corechart']});
+            //google.charts.setOnLoadCallback(drawVisualization);
         </script>
 
     </head>
-    <body onload="generateGoals()">
+    <body onload="pageLoad()">
+<!--    <body onload="generateGoals()">-->
         <form id="addActivityForm"> <!--link to css-->
             <select type="text" name="activity" id="activity" placeholder="Type of activity (required)"> <!--creates a drop down selection for activity-->
                 <option value = "running">running</option>
@@ -33,31 +34,33 @@
 
         <button class="button" onclick='addActivity();'>Add activity</button>
 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <canvas id="myChart"  style="height: 50vh" ></canvas>
 
-        <div id = "goals">
-            <form id="difficultyGoalsForm"> <!--link to css-->
-                <select type="text" name="goalDifficulty" id="goalDifficulty" placeholder="goalDifficulty (requried)"> <!--creates a drop down selection for difficulty-->
-                    <option value = "easy">easy</option>
-                    <option value = "medium">medium</option>
-                    <option value = "hard">hard</option>
-                </select>
-            </form>
+<!--        <div id = "goals">-->
+<!--            <form id="difficultyGoalsForm"> &lt;!&ndash;link to css&ndash;&gt;-->
+<!--                <select type="text" name="goalDifficulty" id="goalDifficulty" placeholder="goalDifficulty (requried)"> &lt;!&ndash;creates a drop down selection for difficulty&ndash;&gt;-->
+<!--                    <option value = "easy">easy</option>-->
+<!--                    <option value = "medium">medium</option>-->
+<!--                    <option value = "hard">hard</option>-->
+<!--                </select>-->
+<!--            </form>-->
 
-            <button class="button" onclick="setGoalDifficulty();">Set difficulty</button>
-            
-            <form id = "goalsForm">
-                <select type="text" name="goalType" id="goalType" placeholder="Choose your goal"> <!--creates a drop down selection for activity-->
-                    <option id = "goalChoice1" value = "goal1"></option>
-                    <option id = "goalChoice2" value = "goal2"></option>
-                    <option id = "goalChoice3" value = "goal3"></option><!--This list can be expanded further in the future-->
-                </select>
-            </form>
+<!--            <button class="button" onclick="setGoalDifficulty();">Set difficulty</button>-->
+<!--            -->
+<!--            <form id = "goalsForm">-->
+<!--                <select type="text" name="goalType" id="goalType" placeholder="Choose your goal"> &lt;!&ndash;creates a drop down selection for activity&ndash;&gt;-->
+<!--                    <option id = "goalChoice1" value = "goal1"></option>-->
+<!--                    <option id = "goalChoice2" value = "goal2"></option>-->
+<!--                    <option id = "goalChoice3" value = "goal3"></option>&lt;!&ndash;This list can be expanded further in the future&ndash;&gt;-->
+<!--                </select>-->
+<!--            </form>-->
 
-            <p id="goalDescription"></p>
+<!--            <p id="goalDescription"></p>-->
 
-        </div>
+<!--        </div>-->
 
-        <button class="button" onclick='addGoal();'>Add goal</button>
+<!--        <button class="button" onclick='addGoal();'>Add goal</button>-->
 
 
         <div id="chart_div" style="width: 900px; height: 500px;"></div>

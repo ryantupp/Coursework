@@ -3,6 +3,7 @@ package controllers;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.Main;
 
@@ -10,7 +11,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 
 
 @Path("activitiesCompleted/")
@@ -21,7 +21,7 @@ public class ActivitiesCompleted {
 
     @POST
     @Path("addActivity")
-    public String addActivity(@FormDataParam("activity") String activity, @FormDataParam("distance") int distance, @FormDataParam("time") int time, @FormDataParam("difficulty") String difficulty, @CookieParam("Token") String Token){
+    public String addActivity(@FormDataParam("activity") String activity, @FormDataParam("distance") int distance, @FormDataParam("time") int time, @FormDataParam("difficulty") String difficulty, @CookieParam("Token") String Token) {
         System.out.println("Invoked addActivity() on path activitiesCompleted/addActivity");//prints to system, use this to check function is running
         int activitiesId = returnActivityId(activity);//gets activityId
         int userID = returnUserId(Token);//gets userId
@@ -29,7 +29,7 @@ public class ActivitiesCompleted {
         int numberOfActivities = countActivities(userID);
         int newUserActivityNum = numberOfActivities + 1;
 
-        if ((distance > 0 && distance < 1000 && time < 5000 && time > 0) || (activity == "gym" && time>0 && distance == 0)){//checks distance and time are valid
+        if ((distance > 0 && distance < 1000 && time < 5000 && time > 0) || (activity == "gym" && time > 0 && distance == 0)) {//checks distance and time are valid
 
             try { //sql statement below
                 PreparedStatement statement1 = Main.db.prepareStatement("INSERT INTO ActivitiesCompleted (UserID, ActivitiesID, Distance, Difficulty, calories, time, userActivityNum) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -47,14 +47,13 @@ public class ActivitiesCompleted {
                 System.out.println(e.getMessage());//error occured
                 return "{\"Error\": \"Something as gone wrong.\"}";
             }
-        }
-        else {
+        } else {
             return "{\"Error\": \"Distance or time is an extreme value.\"}";//distance and time
         }
 
     }
 
-    public int returnUserId(String Token){
+    public int returnUserId(String Token) {
         try {
             PreparedStatement statement = Main.db.prepareStatement("SELECT UserID FROM Users WHERE Token = ?");
             statement.setString(1, Token);
@@ -66,7 +65,7 @@ public class ActivitiesCompleted {
         }
     }//
 
-    public int returnActivityId(String activity){
+    public int returnActivityId(String activity) {
         try {
             PreparedStatement statement = Main.db.prepareStatement("SELECT ActivitiesID FROM Activities WHERE sport = ?");
             statement.setString(1, activity);
@@ -99,19 +98,19 @@ public class ActivitiesCompleted {
         }
     }
 
-    public double calcDifficultyVal(String difficulty){
+    public double calcDifficultyVal(String difficulty) {
         if (difficulty == "easy") {
             return 0.8;
-        } else if(difficulty == "medium"){
+        } else if (difficulty == "medium") {
             return 1;
         } else {
             return 1.3;
         }
     }
 
-    public int countActivities(int UserID){
+    public int countActivities(int UserID) {
 
-        try{
+        try {
             PreparedStatement statement = Main.db.prepareStatement("SELECT COUNT(*) FROM ActivitiesCompleted WHERE UserID = ?");
             statement.setInt(1, UserID);
             ResultSet numberOfActivitiesR = statement.executeQuery();
@@ -126,106 +125,61 @@ public class ActivitiesCompleted {
     }
 
 
-
-
-
-
-
     @GET
     @Path("drawGraph")
-    public JSONObject drawGraph(@CookieParam("Token") String Token) {
+    public String drawGraph(@CookieParam("Token") String Token) {
         System.out.println("Invoked activitiesCompleted/drawGraph");
 
-        int userId = returnUserId(Token);
-        int[] caloriesList = new int[0];
+        //int userId = returnUserId(Token);
+        int userId = 12;
+        //int[] caloriesList = new int[0];
+
+        //try {
+        //int numberOfActivities = countActivities(userId);
+
+/*            if (numberOfActivities >= 10) {
+                //want 10 most recent activities
+                caloriesList = new int[10];*/
+        JSONArray response = new JSONArray();
 
         try {
-            int numberOfActivities = countActivities(userId);
+            PreparedStatement statement1 = Main.db.prepareStatement("SELECT calories FROM ActivitiesCompleted WHERE UserID = ? ORDER BY userActivityNum");
+            statement1.setInt(1, userId);
+            ResultSet caloriesResult = statement1.executeQuery();
 
-            if (numberOfActivities >= 10) {
-                //want 10 most recent activities
-                caloriesList = new int[10];
-                try {
-                    PreparedStatement statement1 = Main.db.prepareStatement("SELECT calories FROM ActivitiesCompleted WHERE UserID = ? AND userActivityNum = ?");
-                    for (int i = 0; i < 10; i++) {
-                        statement1.setInt(1, userId);
-                        statement1.setInt(2, (numberOfActivities - i));
-                        ResultSet caloriesResult = statement1.executeQuery();
-                        long caloriesResultL = caloriesResult.getLong(1);
-                        int calories = (int) caloriesResultL;
-                        caloriesList[i] = calories;
-                    }
-
-
-                    JSONObject userDetails = new JSONObject();
-                    for (int i = 0; i<10; i++){
-                        userDetails.put(i+1, caloriesList[i]);
-                    }
-                    return userDetails;
-
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    System.out.println("2 "+ caloriesList);
-                    JSONObject userDetails = new JSONObject();
-                    for (int i = 0; i<10; i++){
-                        userDetails.put(i+1, caloriesList[i]);
-                    }
-                    return userDetails;
-                    //return "{\"Error\": \"Something as gone wrong.\"}";
-                }
-            } else if(numberOfActivities > 0){
-                caloriesList = new int[numberOfActivities];
-                System.out.println("Number of activities = " + numberOfActivities);
-                try {
-                    PreparedStatement statement1 = Main.db.prepareStatement("SELECT calories FROM ActivitiesCompleted WHERE UserID = ? AND userActivityNum = ?");
-                    for (int i = 0; i < numberOfActivities; i++) {
-                        statement1.setInt(1, userId);
-                        statement1.setInt(2, (numberOfActivities - i));
-                        ResultSet caloriesResult = statement1.executeQuery();
-                        long caloriesResultL = caloriesResult.getLong(1);
-                        int calories = (int) caloriesResultL;
-                        //System.out.println(calories);
-                        caloriesList[i] = calories;
-                        //System.out.println(caloriesList);
-                    }
-                    //System.out.println("3 " + caloriesList);
-                    JSONObject userDetails = new JSONObject();
-                    for (int i = 0; i<10; i++){
-                        userDetails.put(i+1, caloriesList[i]);
-                    }
-                    return userDetails;
-
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    //System.out.println("4 "+caloriesList);
-                    JSONObject userDetails = new JSONObject();
-                    for (int i = 0; i<10; i++){
-                        userDetails.put(i+1, caloriesList[i]);
-                    }
-                    return userDetails;
-//                    return "{\"Error\": \"Something as gone wrong.\"}";  //rogue value indicating error
-                }
-            } else{
-                System.out.println("No activities to plot");
-                //System.out.println("5 "+caloriesList);
-                JSONObject userDetails = new JSONObject();
-                for (int i = 0; i<10; i++){
-                    userDetails.put(i+1, caloriesList[i]);
-                }
-                return userDetails;
+            while (caloriesResult.next() == true) {
+                JSONObject row = new JSONObject();
+                row.put("calories", caloriesResult.getInt(1));
+                System.out.println(caloriesResult.getInt(1));
+                response.add(row);
             }
+            System.out.println(response.toString());
+            return response.toString();
+
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            //System.out.println("6 "+caloriesList);;
-            JSONObject userDetails = new JSONObject();
-            for (int i = 0; i<10; i++){
-                userDetails.put(i+1, caloriesList[i]);
-            }
-            return userDetails;
-            //return "{\"Error\": \"Something as gone wrong.\"}";
+            return  "{\"Error\": \"Unable to list items.  Error code xx.\"}";
         }
     }
+//            } else{
+//                System.out.println("No activities to plot");
+//                JSONObject userDetails = new JSONObject();
+//                for (int i = 0; i<10; i++){
+//                    userDetails.put(i+1, caloriesList[i]);
+//                }
+//                return userDetails;
+//            }
 
-
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            JSONObject userDetails = new JSONObject();
+//            for (int i = 0; i<10; i++){
+//                userDetails.put(i+1, caloriesList[i]);
+//            }
+//            return userDetails;
+//        }
 }
+
+
+

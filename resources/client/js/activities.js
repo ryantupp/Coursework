@@ -1,9 +1,11 @@
 "use strict";
+function pageLoad(){
+    drawVisualization();
+}
 
-drawVisualization();
 
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawVisualization);
+//google.charts.load('current', {'packages':['corechart']});
+//google.charts.setOnLoadCallback(drawVisualization);
 
 function addActivity() {
     //debugger;
@@ -33,7 +35,7 @@ function addActivity() {
 
 function drawVisualization() {
 
-    //debugger;
+    debugger;
 
     console.log("Invoked drawVisualization");//prints to console
     let url = "/activitiesCompleted/drawGraph"; //sets URL to the correct API call
@@ -44,58 +46,104 @@ function drawVisualization() {
     }).then(response => {
 
         //console.log(response.json());
-        return response;
-    }).then(response => {
-        if (response.hasOwnProperty("Error")) {//checks for error
-            alert(JSON.stringify(response));
+        return response.json();
+    }).then(items => {
+        if (items.hasOwnProperty("Error")) {//checks for error
+            alert(JSON.stringify(items));
         } else {
+            //console.log("in drawVisualization "+ items);
+            var data = [];
 
-            //console.log(response);
-            //console.log(response.json());
-            //console.log(response[1].stringify());
-            let calories;
-            calories = response;
-            console.log("information retrieved for graph.")
+            let i = 0
 
-
-            let data = google.visualization.arrayToDataTable(
-                [
-                    [0, 0],
-                    [0,  0],
-                    [0,  0],
-                    [0,  0],
-                    [0,  0],
-                    [0,  0],
-                    [0,  0],
-                    [0,  0],
-                    [0,  0],
-                    [0,  0]
-                ]
-            );
-
-            console.log("DATA : " + data);
-
-            for (let i = 0; i < 10; i++){
-                data[[i], [0]] = i + 1;
-                data[[i], [1]] = calories[i];
+            for (let item of items){
+                data[i] = {"activity": i + 1, "calories": item};
+                console.log(item);
+                i++;
             }
 
-            console.log("DATA : " + data);
+            //data = [{"gender": "1", "score" : item}, {"gender": "female", "score" : 13}];  //JSON Array
 
-            var options = {
-                title : 'Activity Graph',
-                vAxis: {title: 'Calories'},
-                hAxis: {title: 'Activity Number'},
-                seriesType: 'bars',
-                series: {5: {type: 'line'}}
+            var labels = data.map(function (e) {
+                return e.activity;
+            });
+            var scores = data.map(function (e) {
+                return e.calories;
+            });
+
+            var ctx = document.getElementById("myChart").getContext("2d");
+            var config = {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Calories burnt',  //title of graph
+                        data: scores,
+                        backgroundColor: 'rgba(0, 119, 204, 0.3)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                            }
+                        }]
+                    }
+                },
+
             };
 
-            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
-            chart.draw(data, options);
-
-            console.log("Activity graph drawn");
-            console.log(response);
+            var chart= new Chart(ctx, config);
         }
+
+
+
+        /* let calories;
+         calories = response;
+         console.log(response);
+         console.log("information retrieved for graph.")
+
+
+         let data = google.visualization.arrayToDataTable(
+             [
+                 [0, 0],
+                 [0,  0],
+                 [0,  0],
+                 [0,  0],
+                 [0,  0],
+                 [0,  0],
+                 [0,  0],
+                 [0,  0],
+                 [0,  0],
+                 [0,  0]
+             ]
+         );
+
+         console.log("DATA : " + data);
+
+         for (let i = 0; i < 10; i++){
+             data[[i], [0]] = i + 1;
+             data[[i], [1]] = calories[i];
+         }
+
+         console.log("DATA : " + data);
+
+         var options = {
+             title : 'Activity Graph',
+             vAxis: {title: 'Calories'},
+             hAxis: {title: 'Activity Number'},
+             seriesType: 'bars',
+             series: {5: {type: 'line'}}
+         };
+
+         var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+         chart.draw(data, options);
+
+         console.log("Activity graph drawn");
+         console.log(response);*/
     });
 
 }
