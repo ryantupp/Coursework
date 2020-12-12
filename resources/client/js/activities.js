@@ -115,7 +115,7 @@ function generateGoals(){
         goal3 = goals[Math.floor(Math.random() * 10)];
     }
 
-    document.getElementById("goalChoice1").innerHTML = goal1;
+    document.getElementById("goalChoice1").innerHTML = goal1;//sets values in the dropdown list
     document.getElementById("goalChoice2").innerHTML = goal2;
     document.getElementById("goalChoice3").innerHTML = goal3;
 
@@ -127,8 +127,6 @@ function addGoal() {
     let url = "/activitiesCompleted/addGoals"; //sets URL to the correct API call
 
     let formData = new FormData(document.getElementById('goalsForm')); //sets formData to the data in the form
-    console.log(formData);
-
 
     fetch(url, {
         method: "POST",
@@ -139,7 +137,7 @@ function addGoal() {
         if (response.hasOwnProperty("Error")) {//checks for error
             alert(JSON.stringify(response));
         } else {
-            alert("goal added");
+            alert("goal added");//lets user know goal is added
         }
     });
 }
@@ -157,7 +155,8 @@ function displayGoal(){
         if (response.hasOwnProperty("Error")) {//checks for error
             alert(JSON.stringify(response));
         } else {
-            document.getElementById("goalDescription").innerHTML = JSON.stringify(response);
+            //console.log(response);
+            //document.getElementById("goalDescription").innerHTML = JSON.stringify(response);
         }
     });
 }

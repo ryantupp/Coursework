@@ -34,19 +34,17 @@
         <div id = "goals">
             <h1>Choose a goal to complete.</h1>
             <form id = "goalsForm">
-                <select type="text" name="goalType" id="goalType" placeholder="Choose your goal"> <!--creates a drop down selection for activity-->
+                <select name="goalType" id="goalType" > <!--creates a drop down selection for activity-->
                     <option id = "goalChoice1"></option>
                     <option id = "goalChoice2"></option>
                     <option id = "goalChoice3"></option><!--This list can be expanded further in the future-->
                 </select>
             </form>
-
-
-
+            <button class="button" onclick='addGoal();'>Add goal</button>
+            <p id="goalDescription"></p>
         </div>
 
-        <button class="button" onclick='addGoal();'>Add goal</button>
-        <p id="goalDescription"></p>
+
 
     </body>
 </html>
