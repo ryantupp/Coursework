@@ -1,6 +1,8 @@
 "use strict";
 function pageLoad(){
     drawVisualization();
+    generateGoals()
+    displayGoal()
 }
 
 
@@ -88,87 +90,74 @@ function drawVisualization() {
 
             var chart= new Chart(ctx, config);
         }
-
-
-
-        /* let calories;
-         calories = response;
-         console.log(response);
-         console.log("information retrieved for graph.")
-
-
-         let data = google.visualization.arrayToDataTable(
-             [
-                 [0, 0],
-                 [0,  0],
-                 [0,  0],
-                 [0,  0],
-                 [0,  0],
-                 [0,  0],
-                 [0,  0],
-                 [0,  0],
-                 [0,  0],
-                 [0,  0]
-             ]
-         );
-
-         console.log("DATA : " + data);
-
-         for (let i = 0; i < 10; i++){
-             data[[i], [0]] = i + 1;
-             data[[i], [1]] = calories[i];
-         }
-
-         console.log("DATA : " + data);
-
-         var options = {
-             title : 'Activity Graph',
-             vAxis: {title: 'Calories'},
-             hAxis: {title: 'Activity Number'},
-             seriesType: 'bars',
-             series: {5: {type: 'line'}}
-         };
-
-         var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
-         chart.draw(data, options);
-
-         console.log("Activity graph drawn");
-         console.log(response);*/
     });
 
 }
 
 
-// function setGoalDifficulty(){
-//     let difficulty = document.getElementById("goalDifficulty");
-//     console.log(difficulty);
-//     generateGoals(difficulty)
-// }
-//
-//
-// function generateGoals(){
-//
-//     //debugger;
-//     console.log("Invoked generateGoals");//prints to console
-//     let url = "/activity/generateGoals"; //sets URL to the correct API call
-//
-//     let formData = new FormData(document.getElementById('difficultyGoalsForm')); //sets formData to the data in the form
-//
-//     fetch(url, {
-//         method: "POST",
-//         body: formData,//calls function in Users.java
-//     }).then(response => {
-//         return response.json();
-//     }).then(response => {
-//         if (response.hasOwnProperty("Error")) {//checks for error
-//             alert(JSON.stringify(response));
-//         } else {
-//             alert("goals generated");
-//         }
-//     });
-//
-// }
-//
-// function addGoal() {
+function setGoalDifficulty(){
+    let difficulty = document.getElementById("goalDifficulty");
+    console.log(difficulty);
+    generateGoals(difficulty)
+}
 
-//}
+
+function generateGoals(){
+
+    let goals = ["Run 30 km", "Cycle 100km", "Swim 10 km", "Row 50km", "Burn 10000 calories", "Exercise for 600 minutes", "Complete 10 easy activities", "Complete 10 medium activities", "Complete 10 hard activities", "Complete 20 activities"];
+
+    let goal1 = goals[Math.floor(Math.random() * 10)];
+    let goal2 = goals[Math.floor(Math.random() * 10)];
+    let goal3 = goals[Math.floor(Math.random() * 10)];
+
+    while((goal1 == goal2) || (goal2 == goal3) || (goal1 == goal3)){
+        goal2 = goals[Math.floor(Math.random() * 10)];
+        goal3 = goals[Math.floor(Math.random() * 10)];
+    }
+
+    document.getElementById("goalChoice1").innerHTML = goal1;
+    document.getElementById("goalChoice2").innerHTML = goal2;
+    document.getElementById("goalChoice3").innerHTML = goal3;
+
+}
+
+function addGoal() {
+    //debugger;
+    console.log("Invoked addGoals");//prints to console
+    let url = "/activitiesCompleted/addGoals"; //sets URL to the correct API call
+
+    let formData = new FormData(document.getElementById('goalsForm')); //sets formData to the data in the form
+    console.log(formData);
+
+
+    fetch(url, {
+        method: "POST",
+        body: formData, //calls function in Users.java
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {//checks for error
+            alert(JSON.stringify(response));
+        } else {
+            alert("goal added");
+        }
+    });
+}
+
+function displayGoal(){
+    //debugger;
+    console.log("Invoked displayGoal");//prints to console
+    let url = "/activitiesCompleted/returnGoal"; //sets URL to the correct API call
+
+    fetch(url, {
+        method: "GET",
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {//checks for error
+            alert(JSON.stringify(response));
+        } else {
+            document.getElementById("goalDescription").innerHTML = JSON.stringify(response);
+        }
+    });
+}

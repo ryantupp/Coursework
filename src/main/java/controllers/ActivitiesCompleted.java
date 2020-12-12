@@ -153,10 +153,60 @@ public class ActivitiesCompleted {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return  "{\"Error\": \"Unable to draw graph.  Error code xx.\"}";//error message
+            return "{\"Error\": \"Unable to draw graph.  Error code xx.\"}";//error message
+        }
+    }
+
+
+    @POST
+    @Path("addGoals")
+    public String addGoals(@FormDataParam("goalType") String formData, @CookieParam("Token") String Token) {
+
+        System.out.println("Invoked Activities.addGoals()");
+
+        int userId = returnUserId(Token);//gets userId (repeating function)
+
+        System.out.println(returnGoal(Token));
+
+        if(returnGoal(Token) == null){
+            try {
+                PreparedStatement statement = Main.db.prepareStatement("UPDATE Users SET goals = ? WHERE UserID = ?");//adds goal to database
+                statement.setString(1, formData);
+                statement.setInt(2, userId);
+                statement.executeUpdate();//executes statement
+                return "{\"OK\": \"goal has been added. \"}";//returns this message
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());//error occured
+                return "{\"Error\": \"Something as gone wrong.\"}";
+            }
+        } else {
+            return "{\"Error\": \"You already have a goal set.\"}";
+        }
+
+
+    }
+
+    @GET
+    @Path("returnGoal")
+    public String returnGoal(@CookieParam("Token") String Token){
+        System.out.println("Invoked Activities.returnGoal()");
+        int userId = returnUserId(Token);//gets userId (repeating function)
+
+        try{
+            PreparedStatement statement = Main.db.prepareStatement("SELECT goals FROM Users WHERE UserId = ?");//adds goal to database
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.getString("goals");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());//error occured
+            return "{\"Error\": \"Something as gone wrong.\"}";
         }
     }
 }
+
+
 
 
 
