@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <title>Health Tracker</title>
     <script src="/client/js/users.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-    <nav id="navBar">
-        <h1>Health Tracker</h1>
-        <button onclick='logout();'>LOGOUT</button>
-        <button onclick="window.open('activity.html', '_self');">Activity</button>
-    </nav>
+    <h1>Health Tracker</h1>
+    <div class="topnav">
+        <a class="active" href="index.html">Home</a>
+        <a href="activity.html">Activity</a>
+        <a href="createAnAccount.html">Create An Account</a>
+        <a onclick='logout();' href="login.html">LOGOUT</a>
+    </div>
     <button onclick='getUsersList();'>Run getUsersList</button>
     <table id="UsersTable"></table>
     <br>
