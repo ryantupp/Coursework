@@ -1,7 +1,8 @@
 /* Add a black background color to the top navigation */
 .topnav {
-    background-color: #333;
+    background-color: #999999;
     overflow: hidden;
+    margin: -8px -10px 50px -10px;
 }
 
 /* Style the links inside the navigation bar */
@@ -24,4 +25,12 @@
 .topnav a.active {
     background-color: #4CAF50;
     color: white;
+}
+
+.indexBody {
+    background-color:#e5e5e5;
+}
+
+.h1Title {
+    margin: 0px 100px 0px 0px;
 }
