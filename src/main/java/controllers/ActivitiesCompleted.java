@@ -63,7 +63,7 @@ public class ActivitiesCompleted {
             System.out.println(e.getMessage());
             return -1;  //rogue value indicating error
         }
-    }//
+    }
 
     public int returnActivityId(String activity) {
         try {
@@ -75,7 +75,7 @@ public class ActivitiesCompleted {
             System.out.println(e.getMessage());
             return -1;  //rogue value indicating error
         }
-    }//
+    }
 
     public int numberOfCalories(int ActivitiesId, int time, String difficulty) {
         int caloriesPerMinute = returnCaloriesPerMinute(ActivitiesId);
@@ -187,8 +187,8 @@ public class ActivitiesCompleted {
     public String returnGoal(@CookieParam("Token") String Token){
         System.out.println("Invoked Activities.returnGoal()");
         int userId = returnUserId(Token);//gets userId (repeating function)
-
         try{
+
             PreparedStatement statement = Main.db.prepareStatement("SELECT goals FROM Users WHERE UserID = ?");//adds goal to database
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
@@ -197,6 +197,58 @@ public class ActivitiesCompleted {
         } catch (Exception e) {
             System.out.println(e.getMessage());//error occured
             return "{\"Error\": \"Something as gone wrong.\"}";
+        }
+    }
+
+    @POST
+    @Path("goalCompleted")
+    public String goalCompleted(@CookieParam("Token") String Token){
+        System.out.println("Invoked Activities.goalCompleted()");
+        int userId = returnUserId(Token);//gets userId (repeating function)
+        int userRank = returnUserRank(userId);
+        int userTrophies = returnUserTrophies(userId);
+
+        try{
+            PreparedStatement statement = Main.db.prepareStatement("UPDATE Users SET goals = NULL WHERE UserID = ?");//adds goal to database
+            statement.setInt(1, userId);
+            statement.executeUpdate();
+            PreparedStatement statement1 = Main.db.prepareStatement("UPDATE Users SET rank = ? WHERE UserID = ?");
+            statement1.setInt(1, (userRank+1));
+            statement1.setInt(2, userId);
+            statement1.executeUpdate();
+            PreparedStatement statement2 = Main.db.prepareStatement("UPDATE  Users SET trophies = ? WHERE UserID = ?");
+            statement2.setInt(1, (userTrophies+1));
+            statement2.setInt(2, userId);
+            statement2.executeUpdate();
+            return "Goal completed" +
+                    "Congratulations you have earned 1 trophy and  gained a rank!";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());//error occured
+            return "{\"Error\": \"Something as gone wrong.\"}";
+        }
+    }
+
+    public int returnUserRank(int UserID) {
+        try {
+            PreparedStatement statement = Main.db.prepareStatement("SELECT rank FROM Users WHERE UserID = ?");//selects rank os user
+            statement.setInt(1, UserID);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.getInt("rank");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return -1;  //rogue value indicating error
+        }
+    }
+
+    public int returnUserTrophies(int UserID) {
+        try {
+            PreparedStatement statement = Main.db.prepareStatement("SELECT trophies FROM Users WHERE UserID = ?");//selects rank os user
+            statement.setInt(1, UserID);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.getInt("trophies");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return -1;  //rogue value indicating error
         }
     }
 }

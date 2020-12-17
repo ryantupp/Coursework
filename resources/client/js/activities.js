@@ -95,13 +95,6 @@ function drawVisualization() {
 }
 
 
-function setGoalDifficulty(){
-    let difficulty = document.getElementById("goalDifficulty");
-    console.log(difficulty);
-    generateGoals(difficulty)
-}
-
-
 function generateGoals(){
 
     let goals = ["Run 30 km", "Cycle 100km", "Swim 10 km", "Row 50km", "Burn 10000 calories", "Exercise for 600 minutes", "Complete 10 easy activities", "Complete 10 medium activities", "Complete 10 hard activities", "Complete 20 activities"];
@@ -155,8 +148,28 @@ function displayGoal(){
         if (response.hasOwnProperty("Error")) {//checks for error
             alert(JSON.stringify(response));
         } else {
-            //console.log(response);
-            //document.getElementById("goalDescription").innerHTML = JSON.stringify(response);
+            console.log("here");
+
+            // console.log(response);
+            // document.getElementById("goalDescription").innerHTML = JSON.stringify(response);
+        }
+    });
+}
+
+function goalCompleted(){
+    //debugger;
+    console.log("Invoked goalCompleted");//prints to console
+    let url = "/activitiesCompleted/goalCompleted"; //sets URL to the correct API call
+
+    fetch(url, {
+        method: "POST",
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {//checks for error
+            alert(JSON.stringify(response));
+        } else {
+            alert(JSON.stringify(response));
         }
     });
 }
