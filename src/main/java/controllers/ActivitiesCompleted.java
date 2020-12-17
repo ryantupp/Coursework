@@ -205,26 +205,29 @@ public class ActivitiesCompleted {
     public String goalCompleted(@CookieParam("Token") String Token){
         System.out.println("Invoked Activities.goalCompleted()");
         int userId = returnUserId(Token);//gets userId (repeating function)
-        int userRank = returnUserRank(userId);
-        int userTrophies = returnUserTrophies(userId);
-
-        try{
-            PreparedStatement statement = Main.db.prepareStatement("UPDATE Users SET goals = NULL WHERE UserID = ?");//adds goal to database
-            statement.setInt(1, userId);
-            statement.executeUpdate();
-            PreparedStatement statement1 = Main.db.prepareStatement("UPDATE Users SET rank = ? WHERE UserID = ?");
-            statement1.setInt(1, (userRank+1));
-            statement1.setInt(2, userId);
-            statement1.executeUpdate();
-            PreparedStatement statement2 = Main.db.prepareStatement("UPDATE  Users SET trophies = ? WHERE UserID = ?");
-            statement2.setInt(1, (userTrophies+1));
-            statement2.setInt(2, userId);
-            statement2.executeUpdate();
-            return "Goal completed" +
-                    "Congratulations you have earned 1 trophy and  gained a rank!";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());//error occured
-            return "{\"Error\": \"Something as gone wrong.\"}";
+        int userRank = returnUserRank(userId);//gets user rank
+        int userTrophies = returnUserTrophies(userId);//gets users trophies
+        String goal = returnGoal(Token);//gets users current goal to check if null
+        if (!(goal == null)){//checks if goal is not null
+            try{
+                PreparedStatement statement = Main.db.prepareStatement("UPDATE Users SET goals = NULL WHERE UserID = ?");//sets goal to null
+                statement.setInt(1, userId);
+                statement.executeUpdate();
+                PreparedStatement statement1 = Main.db.prepareStatement("UPDATE Users SET rank = ? WHERE UserID = ?");//increments rank
+                statement1.setInt(1, (userRank+1));
+                statement1.setInt(2, userId);
+                statement1.executeUpdate();
+                PreparedStatement statement2 = Main.db.prepareStatement("UPDATE  Users SET trophies = ? WHERE UserID = ?");//increments trophies
+                statement2.setInt(1, (userTrophies+1));
+                statement2.setInt(2, userId);
+                statement2.executeUpdate();
+                return "{\"OK\": \"Goal completed! Congratulations you have earned 1 trophy and  gained a rank! \"}";//return string
+            } catch (Exception e) {//error catch
+                System.out.println(e.getMessage());//error occured
+                return "{\"Error\": \"Something as gone wrong.\"}";
+            }
+        } else {
+            return "{\"Error\": \"You have not set yourself a goal.\"}";//if user hasnt got a goal yet
         }
     }
 
@@ -242,7 +245,7 @@ public class ActivitiesCompleted {
 
     public int returnUserTrophies(int UserID) {
         try {
-            PreparedStatement statement = Main.db.prepareStatement("SELECT trophies FROM Users WHERE UserID = ?");//selects rank os user
+            PreparedStatement statement = Main.db.prepareStatement("SELECT trophies FROM Users WHERE UserID = ?");//selects trophies os user
             statement.setInt(1, UserID);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.getInt("trophies");

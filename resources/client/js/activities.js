@@ -2,7 +2,7 @@
 function pageLoad(){
     drawVisualization();
     generateGoals()
-    displayGoal()
+    //displayGoal()
 }
 
 
